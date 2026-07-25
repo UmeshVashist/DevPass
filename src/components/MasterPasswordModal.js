@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Lock, Unlock, Eye, EyeOff, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, ShieldCheck, AlertCircle, LogOut } from 'lucide-react';
 import { encryptData, decryptData } from '@/lib/crypto';
+import { useClerk } from '@clerk/nextjs';
 
 export default function MasterPasswordModal({ records, onUnlock, isLoadingRecords }) {
+  const { signOut } = useClerk();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -206,21 +208,32 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
               </div>
             )}
 
-            <button
-              type="submit"
-              className="btn-raised btn-accent"
-              disabled={isSubmitting}
-              style={{ width: '100%', padding: '0.85rem' }}
-            >
-              {isSubmitting ? (
-                <span>Processing...</span>
-              ) : (
-                <>
-                  {isNewUser ? <ShieldCheck size={18} /> : <Unlock size={18} />}
-                  <span>{isNewUser ? 'Initialize Vault' : 'Unlock Vault'}</span>
-                </>
-              )}
-            </button>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+              <button
+                type="button"
+                className="btn-raised"
+                onClick={() => signOut()}
+                style={{ flex: 1, padding: '0.85rem' }}
+              >
+                <LogOut size={18} />
+                <span>Log Out</span>
+              </button>
+              <button
+                type="submit"
+                className="btn-raised btn-accent"
+                disabled={isSubmitting}
+                style={{ flex: 1.5, padding: '0.85rem' }}
+              >
+                {isSubmitting ? (
+                  <span>Processing...</span>
+                ) : (
+                  <>
+                    {isNewUser ? <ShieldCheck size={18} /> : <Unlock size={18} />}
+                    <span>{isNewUser ? 'Initialize Vault' : 'Unlock Vault'}</span>
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         )}
       </div>
