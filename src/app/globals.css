@@ -1,0 +1,460 @@
+/* Custom CSS Design System - Skeuomorphic Glass UI */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-outfit: 'Outfit', sans-serif;
+  
+  /* Palette: Slate & Rich Indigo Accent */
+  --bg-gradient: radial-gradient(circle at top left, #0f1322, #070913);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-bg-active: rgba(255, 255, 255, 0.02);
+  
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-bright: rgba(255, 255, 255, 0.15);
+  --glass-border-focus: rgba(99, 102, 241, 0.4);
+  
+  /* Text */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* Accent Colors */
+  --accent-primary: #6366f1; /* Indigo */
+  --accent-primary-hover: #4f46e5;
+  --accent-glow: rgba(99, 102, 241, 0.3);
+  
+  --accent-favorite: #f59e0b; /* Amber */
+  --accent-favorite-glow: rgba(245, 158, 11, 0.35);
+  
+  --accent-danger: #ef4444; /* Red */
+  --accent-danger-hover: #dc2626;
+  --accent-danger-glow: rgba(239, 68, 68, 0.35);
+
+  --accent-success: #10b981; /* Emerald */
+  
+  /* Shadows & Skeuomorphic Depth */
+  --shadow-skeuo-raised: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.4);
+  
+  --shadow-skeuo-inset: 
+    inset 0 2px 5px 0 rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05),
+    0 1px 1px 0 rgba(255, 255, 255, 0.05);
+
+  --shadow-btn-raised:
+    0 4px 10px -2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 1px 0 rgba(0, 0, 0, 0.3);
+    
+  --shadow-btn-pressed:
+    inset 0 3px 6px 0 rgba(0, 0, 0, 0.6),
+    0 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-outfit);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Ambient Orbs */
+.bg-ambient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.25;
+  mix-blend-mode: screen;
+}
+
+.orb-1 {
+  top: -10%;
+  left: 20%;
+  width: 50vw;
+  height: 50vw;
+  background: var(--accent-primary);
+  animation: float-slow 20s infinite alternate;
+}
+
+.orb-2 {
+  bottom: -10%;
+  right: 15%;
+  width: 45vw;
+  height: 45vw;
+  background: #a855f7; /* Purple */
+  animation: float-slow 25s infinite alternate-reverse;
+}
+
+.orb-3 {
+  top: 40%;
+  left: -10%;
+  width: 30vw;
+  height: 30vw;
+  background: #0ea5e9; /* Sky Blue */
+  animation: float-medium 18s infinite alternate;
+}
+
+@keyframes float-slow {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(4vw, 5vh) scale(1.1); }
+}
+
+@keyframes float-medium {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-3vw, -4vh) scale(1.15); }
+}
+
+/* Base Layout and Container styling */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Glass panel */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-skeuo-raised);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glass panel glare effect overlay */
+.glass-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Skeuomorphic Inset Input */
+.inset-input-wrapper {
+  position: relative;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-skeuo-inset);
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.inset-input-wrapper:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 
+    var(--shadow-skeuo-inset),
+    0 0 12px 0 var(--accent-glow);
+}
+
+.inset-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.inset-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Skeuomorphic Raised Button */
+.btn-raised {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid var(--glass-border-bright);
+  box-shadow: var(--shadow-btn-raised);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.btn-raised:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-raised:active {
+  box-shadow: var(--shadow-btn-pressed);
+  transform: translateY(1px);
+}
+
+/* Accent Buttons */
+.btn-accent {
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 4px 14px 0 rgba(99, 102, 241, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 1px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-accent:hover {
+  background: linear-gradient(180deg, #7477f3 0%, #5d55eb 100%) !important;
+  box-shadow: 
+    0 6px 18px 0 rgba(99, 102, 241, 0.45),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.btn-accent:active {
+  box-shadow: 
+    inset 0 3px 6px 0 rgba(0, 0, 0, 0.4),
+    0 1px 1px 0 rgba(99, 102, 241, 0.2) !important;
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 4px 14px 0 rgba(239, 68, 68, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 1px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(180deg, #f87171 0%, #e11d48 100%) !important;
+  box-shadow: 
+    0 6px 18px 0 rgba(239, 68, 68, 0.45),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+.btn-danger:active {
+  box-shadow: 
+    inset 0 3px 6px 0 rgba(0, 0, 0, 0.4),
+    0 1px 1px 0 rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Dropdown styling */
+.dropdown-skeuo {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border-bright);
+  box-shadow: var(--shadow-btn-raised);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 0.75rem 2.5rem 0.75rem 1.25rem;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dropdown-skeuo:hover {
+  background-color: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.dropdown-skeuo:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 
+    var(--shadow-btn-raised),
+    0 0 12px 0 var(--accent-glow);
+}
+
+.dropdown-skeuo option {
+  background-color: #0d111e;
+  color: var(--text-primary);
+}
+
+/* Modals Backdrops & Glass containers */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 5, 11, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  animation: fade-in 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 520px;
+  margin: 1.5rem;
+  padding: 2.25rem;
+  animation: scale-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.9) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Scrollbars styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Clerk custom override styles (glass design) */
+.cl-card {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-skeuo-raised) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.cl-headerTitle {
+  color: var(--text-primary) !important;
+}
+
+.cl-headerSubtitle {
+  color: var(--text-secondary) !important;
+}
+
+.cl-socialButtonsBlockButton {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border-bright) !important;
+  box-shadow: var(--shadow-btn-raised) !important;
+  color: var(--text-primary) !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background: var(--glass-bg-hover) !important;
+}
+
+.cl-socialButtonsBlockButton:active {
+  box-shadow: var(--shadow-btn-pressed) !important;
+}
+
+.cl-formLabel {
+  color: var(--text-secondary) !important;
+}
+
+.cl-formButtonPrimary {
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3) !important;
+}
+
+.cl-footerActionLink {
+  color: var(--accent-primary) !important;
+}
+
+.cl-footerActionText {
+  color: var(--text-muted) !important;
+}
+
+.cl-userButtonPopoverCard {
+  background: #0f1322 !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+.cl-userPreviewTitle {
+  color: var(--text-primary) !important;
+}
+
+.cl-userPreviewSubtitle {
+  color: var(--text-secondary) !important;
+}
+
+.cl-userButtonPopoverActionButtonText {
+  color: var(--text-primary) !important;
+}
+
+/* Alert Notification styling */
+.alert-popup {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.alert-popup.danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
