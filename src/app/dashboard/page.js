@@ -370,11 +370,11 @@ export default function Dashboard() {
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
                   className="dropdown-skeuo"
-                  style={{ minWidth: '130px' }}
+                  style={{ minWidth: '130px', cursor: 'pointer' }}
                 >
-                  <option value="all">All Items</option>
-                  <option value="favorite">Favorites</option>
-                  <option value="unfavorite">Unfavorites</option>
+                  <option value="all" style={{ cursor: 'pointer' }}>All Items</option>
+                  <option value="favorite" style={{ cursor: 'pointer' }}>Favorites</option>
+                  <option value="unfavorite" style={{ cursor: 'pointer' }}>Unfavorites</option>
                 </select>
               </div>
             </div>

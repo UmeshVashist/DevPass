@@ -1,11 +1,52 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { Shield, Database, Key, CheckCircle, ArrowRight, Eye, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.replace('/dashboard');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded || isSignedIn) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-gradient)',
+        color: 'var(--text-primary)',
+        gap: '1.25rem'
+      }}>
+        <div style={{
+          width: '36px',
+          height: '36px',
+          border: '3px solid rgba(255, 255, 255, 0.1)',
+          borderTopColor: 'var(--accent-primary)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: '500', letterSpacing: '0.02em' }}>
+          Opening Secure Vault...
+        </span>
+        <style jsx>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

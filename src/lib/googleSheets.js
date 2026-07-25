@@ -31,7 +31,7 @@ let cachedSheetDetails = null;
 let cachedRows = null;
 let cachedRowsTimestamp = 0;
 let headersChecked = false;
-const CACHE_TTL = 10000; // 10 seconds cache validity (Time-To-Live)
+const CACHE_TTL = 60000; // 60 seconds (1 minute) cache validity for faster load times
 
 /**
  * Invalidates the rows cache to force a fresh pull on the next read.
@@ -68,7 +68,7 @@ export async function resolveSheetDetails(sheets) {
 
 /**
  * Fetches all rows from the Google Sheet.
- * Utilizes short-lived in-memory caching to boost search, loading, and index lookup speed.
+ * Utilizes in-memory caching and optimized defaults to boost load speed.
  */
 export async function getSheetRows() {
   const auth = getAuthClient();
@@ -80,16 +80,34 @@ export async function getSheetRows() {
   }
   
   try {
-    const sheetDetails = await resolveSheetDetails(sheets);
-    const range = `${sheetDetails.name}!A:G`;
+    // Default to "Sheet1" or cached sheet name to save an API request to resolveSheetDetails
+    let sheetName = cachedSheetDetails ? cachedSheetDetails.name : 'Sheet1';
+    const range = `${sheetName}!A:G`;
     
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range,
-    });
-    cachedRows = response.data.values || [];
-    cachedRowsTimestamp = now;
-    return cachedRows;
+    try {
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range,
+      });
+      cachedRows = response.data.values || [];
+      cachedRowsTimestamp = now;
+      if (!cachedSheetDetails) {
+        cachedSheetDetails = { name: 'Sheet1', id: 0 };
+      }
+      return cachedRows;
+    } catch (innerError) {
+      // Fallback: Resolve dynamically if Sheet1 does not exist
+      console.warn('Sheet1 not found, resolving metadata dynamically...');
+      const sheetDetails = await resolveSheetDetails(sheets);
+      const fallbackRange = `${sheetDetails.name}!A:G`;
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range: fallbackRange,
+      });
+      cachedRows = response.data.values || [];
+      cachedRowsTimestamp = now;
+      return cachedRows;
+    }
   } catch (error) {
     console.error('Error fetching sheet rows:', error);
     return [];

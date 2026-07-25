@@ -19,7 +19,33 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        layout: {
+          logoImageUrl: "https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png"
+        },
+        options: {
+          logoImageUrl: "https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png"
+        },
+        variables: {
+          colorText: "#f8fafc",
+          colorMutedForeground: "#94a3b8",
+          colorTextSecondary: "#94a3b8",
+          colorPrimary: "#6366f1",
+        },
+        elements: {
+          formFieldLabel: {
+            color: "#94a3b8",
+          },
+          cardHeaderTitle: {
+            color: "#f8fafc",
+          },
+          cardHeaderSubtitle: {
+            color: "#94a3b8",
+          }
+        }
+      }}
+    >
       <html lang="en">
         <body className={outfit.className}>
           <div className="bg-ambient">
