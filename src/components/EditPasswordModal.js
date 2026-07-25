@@ -15,7 +15,16 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
   useEffect(() => {
     if (record) {
       setTitle(record.title || '');
-      setUrl(record.url || '');
+      
+      // Strip http:// or https:// prefix for local editing state
+      let initialUrl = record.url || '';
+      if (initialUrl.startsWith('https://')) {
+        initialUrl = initialUrl.substring(8);
+      } else if (initialUrl.startsWith('http://')) {
+        initialUrl = initialUrl.substring(7);
+      }
+      setUrl(initialUrl);
+
       setUsername(record.username || '');
       setPassword(record.password || '');
       setIsFavorite(record.isFavorite || false);
@@ -38,9 +47,15 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
     setIsSubmitting(true);
 
     try {
+      // Prepare URL with visual prefix
+      let finalUrl = url.trim();
+      if (finalUrl && !finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
+      }
+
       // Re-encrypt the updated data
       const encryptedTitle = encryptData(title.trim(), masterPassword);
-      const encryptedUrl = encryptData(url.trim(), masterPassword);
+      const encryptedUrl = encryptData(finalUrl, masterPassword);
       const encryptedUsername = encryptData(username.trim(), masterPassword);
       const encryptedPassword = encryptData(password.trim(), masterPassword);
 
@@ -67,7 +82,7 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
       onEditSuccess({
         id: record.id,
         title: title.trim(),
-        url: url.trim(),
+        url: finalUrl,
         username: username.trim(),
         password: password.trim(),
         isFavorite
@@ -156,18 +171,44 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               URL *
             </label>
-            <div className="inset-input-wrapper">
-              <span style={{ paddingLeft: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
-                <Link size={18} />
-              </span>
+            <div className="inset-input-wrapper" style={{ display: 'flex', alignItems: 'stretch', padding: 0, overflow: 'hidden' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 0.85rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderRight: '1px solid var(--glass-border)',
+                color: 'var(--text-muted)',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                userSelect: 'none',
+                borderTopLeftRadius: '10px',
+                borderBottomLeftRadius: '10px'
+              }}>
+                https://
+              </div>
               <input
                 type="text"
                 className="inset-input"
-                placeholder="https://example.com"
+                placeholder="e.g. example.com"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val.startsWith('https://')) {
+                    setUrl(val.substring(8));
+                  } else if (val.startsWith('http://')) {
+                    setUrl(val.substring(7));
+                  } else {
+                    setUrl(val);
+                  }
+                }}
                 disabled={isSubmitting}
-                style={{ paddingLeft: '0.50rem' }}
+                style={{ 
+                  flex: 1, 
+                  borderTopLeftRadius: 0, 
+                  borderBottomLeftRadius: 0,
+                  paddingLeft: '0.75rem' 
+                }}
               />
             </div>
           </div>

@@ -1,15 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Plus, Key, Link, User, Globe, Heart } from 'lucide-react';
 import { encryptData } from '@/lib/crypto';
 
 export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAddSuccess }) {
   const [title, setTitle] = useState('');
-  const [url, setUrl] = useState('https://');
+  const [url, setUrl] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFavoriteFocused, setIsFavoriteFocused] = useState(false);
+
+  // Reset form when modal is opened or closed
+  useEffect(() => {
+    if (!isOpen) {
+      setTitle('');
+      setUrl('');
+      setUsername('');
+      setPassword('');
+      setIsFavorite(false);
+      setError('');
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -26,9 +39,15 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
     setIsSubmitting(true);
 
     try {
+      // Prepare URL with visual prefix
+      let finalUrl = url.trim();
+      if (finalUrl && !finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
+      }
+
       // Encrypt the sensitive fields in the browser
       const encryptedTitle = encryptData(title.trim(), masterPassword);
-      const encryptedUrl = encryptData(url.trim(), masterPassword);
+      const encryptedUrl = encryptData(finalUrl, masterPassword);
       const encryptedUsername = encryptData(username.trim(), masterPassword);
       const encryptedPassword = encryptData(password.trim(), masterPassword);
 
@@ -57,7 +76,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
 
       // Reset form and notify parent
       setTitle('');
-      setUrl('https://');
+      setUrl('');
       setUsername('');
       setPassword('');
       setIsFavorite(false);
@@ -66,7 +85,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
       onAddSuccess({
         id: recordId,
         title: title.trim(),
-        url: url.trim(),
+        url: finalUrl,
         username: username.trim(),
         password: password.trim(),
         isFavorite
@@ -155,18 +174,44 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               URL *
             </label>
-            <div className="inset-input-wrapper">
-              <span style={{ paddingLeft: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
-                <Link size={18} />
-              </span>
+            <div className="inset-input-wrapper" style={{ display: 'flex', alignItems: 'stretch', padding: 0, overflow: 'hidden' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 0.85rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                borderRight: '1px solid var(--glass-border)',
+                color: 'var(--text-muted)',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                userSelect: 'none',
+                borderTopLeftRadius: '10px',
+                borderBottomLeftRadius: '10px'
+              }}>
+                https://
+              </div>
               <input
                 type="text"
                 className="inset-input"
-                placeholder="https://example.com"
+                placeholder="e.g. example.com"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val.startsWith('https://')) {
+                    setUrl(val.substring(8));
+                  } else if (val.startsWith('http://')) {
+                    setUrl(val.substring(7));
+                  } else {
+                    setUrl(val);
+                  }
+                }}
                 disabled={isSubmitting}
-                style={{ paddingLeft: '0.50rem' }}
+                style={{ 
+                  flex: 1, 
+                  borderTopLeftRadius: 0, 
+                  borderBottomLeftRadius: 0,
+                  paddingLeft: '0.75rem' 
+                }}
               />
             </div>
           </div>
@@ -211,13 +256,30 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
             </div>
           </div>
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.5rem 0.25rem',
-            cursor: 'pointer'
-          }} onClick={() => setIsFavorite(!isFavorite)}>
+          <div
+            tabIndex={0}
+            onFocus={() => setIsFavoriteFocused(true)}
+            onBlur={() => setIsFavoriteFocused(false)}
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                setIsFavorite(!isFavorite);
+              }
+            }}
+            onClick={() => setIsFavorite(!isFavorite)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.5rem 0.25rem',
+              cursor: 'pointer',
+              borderRadius: '12px',
+              border: isFavoriteFocused ? '1px solid var(--accent-primary)' : '1px solid transparent',
+              boxShadow: isFavoriteFocused ? '0 0 8px var(--accent-glow)' : 'none',
+              outline: 'none',
+              transition: 'all 0.2s ease'
+            }}
+          >
             <div className="btn-raised" style={{
               padding: '6px',
               borderRadius: '8px',
@@ -242,21 +304,38 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="btn-raised btn-accent"
-            disabled={isSubmitting}
-            style={{ marginTop: '0.5rem', padding: '0.85rem' }}
-          >
-            {isSubmitting ? (
-              <span>Saving Securely...</span>
-            ) : (
-              <>
-                <Plus size={18} />
-                <span>Save Password</span>
-              </>
-            )}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+            <button
+              type="submit"
+              className="btn-raised btn-accent"
+              disabled={isSubmitting}
+              style={{ flex: 2, padding: '0.85rem' }}
+            >
+              {isSubmitting ? (
+                <span>Saving Securely...</span>
+              ) : (
+                <>
+                  <Plus size={18} />
+                  <span>Save Password</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTitle('');
+                setUrl('');
+                setUsername('');
+                setPassword('');
+                setIsFavorite(false);
+                setError('');
+              }}
+              className="btn-raised"
+              style={{ flex: 1, padding: '0.85rem' }}
+            >
+              Clear Form
+            </button>
+          </div>
 
         </form>
       </div>

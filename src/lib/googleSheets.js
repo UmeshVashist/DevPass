@@ -127,7 +127,11 @@ export async function appendSheetRow(rowData) {
 
     // Only fetch rows to verify headers once per server lifecycle
     if (!headersChecked) {
-      const currentRows = await getSheetRows();
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range: `${sheetDetails.name}!A1:G1`,
+      });
+      const currentRows = response.data.values || [];
       if (currentRows.length === 0) {
         await sheets.spreadsheets.values.append({
           spreadsheetId: sheetId,
@@ -151,8 +155,12 @@ export async function appendSheetRow(rowData) {
       },
     });
     
-    // Invalidate the cache to ensure new password is shown immediately
-    invalidateCache();
+    // Update cache in-place to ensure new password is shown immediately without refetching
+    if (cachedRows) {
+      cachedRows.push(rowData);
+    } else {
+      invalidateCache();
+    }
     return response.data;
   } catch (error) {
     console.error('Error appending sheet row:', error);
@@ -192,7 +200,12 @@ export async function updateSheetRow(recordId, userId, rowData) {
       },
     });
 
-    invalidateCache();
+    // Update cache in-place to keep memory state synchronized without slow refetch
+    if (cachedRows && rowIndex !== -1) {
+      cachedRows[rowIndex] = rowData;
+    } else {
+      invalidateCache();
+    }
     return response.data;
   } catch (error) {
     console.error('Error updating sheet row:', error);
@@ -237,7 +250,12 @@ export async function deleteSheetRow(recordId, userId) {
       },
     });
 
-    invalidateCache();
+    // Update cache in-place to keep memory state synchronized without slow refetch
+    if (cachedRows && rowIndex !== -1) {
+      cachedRows.splice(rowIndex, 1);
+    } else {
+      invalidateCache();
+    }
     return { success: true };
   } catch (error) {
     console.error('Error deleting sheet row:', error);
