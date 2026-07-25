@@ -102,11 +102,11 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
             marginBottom: '1rem',
             boxShadow: '0 4px 12px 0 rgba(99, 102, 241, 0.15)'
           }}>
-            {isNewUser ? (
-              <ShieldCheck size={32} className="text-accent" style={{ color: 'var(--accent-primary)' }} />
-            ) : (
-              <Lock size={32} style={{ color: 'var(--accent-primary)' }} />
-            )}
+            <img 
+              src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
+              alt="DevPass Logo" 
+              style={{ width: '32px', height: '32px', objectFit: 'contain', display: 'block' }}
+            />
           </div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
             {isNewUser ? 'Set Master Password' : 'Unlock Your Vault'}

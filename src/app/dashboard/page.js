@@ -273,7 +273,11 @@ export default function Dashboard() {
               color: 'var(--accent-primary)',
               boxShadow: '0 0 15px 0 rgba(99, 102, 241, 0.2)'
             }}>
-              <ShieldCheck size={20} />
+              <img 
+                src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
+                alt="DevPass Logo" 
+                style={{ width: '20px', height: '20px', objectFit: 'contain', display: 'block' }}
+              />
             </div>
             <div>
               <span style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
