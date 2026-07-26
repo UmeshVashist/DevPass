@@ -1,26 +1,6 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+import { clerkMiddleware } from '@clerk/nextjs/server';
 
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/__clerk/(.*)',
-]);
-
-const isAuthPage = createRouteMatcher([
-  '/',
-]);
-
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
-
-  if (userId && isAuthPage(req)) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
-
-  if (!isPublicRoute(req)) {
-    await auth.protect();
-  }
-});
+export default clerkMiddleware();
 
 export const config = {
   matcher: [
