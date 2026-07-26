@@ -23,22 +23,16 @@ export default async function RootLayout({ children }) {
   const host = headersList.get("host") || "";
   const isLocalhost = host.includes("localhost");
 
-  const isSatellite = process.env.NEXT_PUBLIC_CLERK_IS_SATELLITE === "true";
-  const rawDomain = isLocalhost ? host : process.env.NEXT_PUBLIC_CLERK_DOMAIN;
-  const domain = rawDomain ? rawDomain.replace(/^https?:\/\//, "") : undefined;
   const signInUrl = isLocalhost 
     ? "http://localhost:3000/auth/login" 
-    : process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL;
+    : "https://devtech.cashms.in/auth/login";
   const launcherUrl = isLocalhost 
     ? "http://localhost:3000" 
     : (process.env.NEXT_PUBLIC_LAUNCHER_URL || "https://devtech.cashms.in");
 
   return (
     <ClerkProvider
-      isSatellite={isSatellite}
-      domain={domain}
       signInUrl={signInUrl}
-      satelliteAutoSync={true}
       afterSignOutUrl={`${launcherUrl}/auth/login`}
       appearance={{
         layout: {
