@@ -20,9 +20,10 @@ export default clerkMiddleware(
     const host = req.nextUrl.host || '';
     const isLocalhost = host.includes('localhost');
     const domain = isLocalhost ? host : 'devpass.cashms.in';
+    const rawSignInUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || 'https://devtech.cashms.in/auth/login';
     const signInUrl = isLocalhost 
       ? 'http://localhost:3000/auth/login' 
-      : 'https://devtech.cashms.in/auth/login';
+      : (rawSignInUrl.startsWith('http') ? rawSignInUrl : `https://devtech.cashms.in${rawSignInUrl}`);
     return {
       isSatellite: !isLocalhost,
       domain,
