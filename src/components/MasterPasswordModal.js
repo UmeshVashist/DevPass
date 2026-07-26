@@ -95,21 +95,27 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
         <div className="glass-glare"></div>
         
         <div style={{ textAlign: 'center', marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
-          <div style={{
-            display: 'inline-flex',
-            padding: '1rem',
-            borderRadius: '50%',
-            background: 'rgba(99, 102, 241, 0.1)',
-            border: '1px solid rgba(99, 102, 241, 0.2)',
-            marginBottom: '1rem',
-            boxShadow: '0 4px 12px 0 rgba(99, 102, 241, 0.15)'
-          }}>
-            <img 
-              src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
-              alt="DevPass Logo" 
-              style={{ width: '32px', height: '32px', objectFit: 'contain', display: 'block' }}
-            />
-          </div>
+          <a
+            href={process.env.NEXT_PUBLIC_LAUNCHER_URL ? `${process.env.NEXT_PUBLIC_LAUNCHER_URL}/dashboard` : "https://devtech.cashms.in/dashboard"}
+            style={{ textDecoration: 'none', display: 'inline-block', cursor: 'pointer' }}
+            title="Go to DevTech Launcher Dashboard"
+          >
+            <div style={{
+              display: 'inline-flex',
+              padding: '1rem',
+              borderRadius: '50%',
+              background: 'rgba(99, 102, 241, 0.1)',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              marginBottom: '1rem',
+              boxShadow: '0 4px 12px 0 rgba(99, 102, 241, 0.15)'
+            }}>
+              <img 
+                src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
+                alt="DevPass Logo" 
+                style={{ width: '32px', height: '32px', objectFit: 'contain', display: 'block' }}
+              />
+            </div>
+          </a>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
             {isNewUser ? 'Set Master Password' : 'Unlock Your Vault'}
           </h2>

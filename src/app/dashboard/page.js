@@ -264,7 +264,17 @@ export default function Dashboard() {
           padding: '1.25rem 1.5rem'
         }}>
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <a
+            href={process.env.NEXT_PUBLIC_LAUNCHER_URL ? `${process.env.NEXT_PUBLIC_LAUNCHER_URL}/dashboard` : "https://devtech.cashms.in/dashboard"}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              textDecoration: 'none',
+              cursor: 'pointer'
+            }}
+            title="Go to DevTech Launcher Dashboard"
+          >
             <div className="btn-raised" style={{
               padding: '8px',
               borderRadius: '10px',
@@ -287,7 +297,7 @@ export default function Dashboard() {
                 Vault Active
               </span>
             </div>
-          </div>
+          </a>
 
           {/* User controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
