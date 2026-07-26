@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  basePath: "/pass",
-};
+const nextConfig = {};
 
 export default nextConfig;
