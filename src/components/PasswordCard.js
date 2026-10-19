@@ -73,28 +73,34 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
   };
 
   return (
-    <div className="glass-card" style={{
-      padding: '1.5rem',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      gap: '1rem',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      minHeight: '200px'
-    }}>
+    <div
+      className="glass-card"
+      style={{
+        padding: '1.4rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        gap: '1rem',
+        minHeight: '210px',
+        position: 'relative',
+      }}
+    >
       <div className="glass-glare"></div>
 
       {/* Header Area */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
-        <div style={{ flex: 1, minWidth: 0, marginRight: '1rem' }}>
-          <h4 style={{
-            fontSize: '1.1rem',
-            fontWeight: '600',
-            color: 'var(--text-primary)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
+        <div style={{ flex: 1, minWidth: 0, marginRight: '0.75rem' }}>
+          <h4
+            style={{
+              fontSize: '1.15rem',
+              fontWeight: '700',
+              color: 'var(--text-primary)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.01em',
+            }}
+          >
             {record.title}
           </h4>
           <a
@@ -108,11 +114,12 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.25rem',
-              marginTop: '0.25rem',
+              marginTop: '0.2rem',
               maxWidth: '100%',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              fontWeight: '500',
             }}
             className="hover-underline"
           >
@@ -123,140 +130,182 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
           </a>
         </div>
 
-        {/* Favorite Icon */}
+        {/* 3D Favorite Button */}
         <button
           onClick={handleToggleFavorite}
           disabled={isUpdatingFavorite}
           style={{
-            background: 'none',
-            border: 'none',
+            background: record.isFavorite ? 'rgba(245, 158, 11, 0.12)' : 'var(--glass-bg)',
+            border: `1px solid ${record.isFavorite ? 'rgba(245, 158, 11, 0.4)' : 'var(--glass-border)'}`,
             cursor: 'pointer',
-            padding: '6px',
-            borderRadius: '50%',
-            backgroundColor: record.isFavorite ? 'rgba(245, 158, 11, 0.08)' : 'rgba(255, 255, 255, 0.02)',
-            border: `1px solid ${record.isFavorite ? 'rgba(245, 158, 11, 0.25)' : 'rgba(255, 255, 255, 0.05)'}`,
+            padding: '7px',
+            borderRadius: '12px',
             color: record.isFavorite ? 'var(--accent-favorite)' : 'var(--text-muted)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'all 0.2s ease',
-            boxShadow: record.isFavorite ? '0 0 8px 0 var(--accent-favorite-glow)' : 'none'
+            transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            boxShadow: record.isFavorite ? '0 2px 10px 0 var(--accent-favorite-glow)' : 'var(--shadow-btn-raised)',
           }}
           className="favorite-button"
+          title={record.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
-          <Heart size={16} fill={record.isFavorite ? 'var(--accent-favorite)' : 'none'} />
+          <Heart
+            size={16}
+            fill={record.isFavorite ? 'var(--accent-favorite)' : 'none'}
+            style={{
+              transform: record.isFavorite ? 'scale(1.1)' : 'scale(1)',
+              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
+          />
         </button>
       </div>
 
-      {/* Account Details Area */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.75rem',
-        padding: '0.75rem 1rem',
-        borderRadius: '12px',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        border: '1px solid rgba(255, 255, 255, 0.02)',
-        boxShadow: 'var(--shadow-skeuo-inset)',
-        position: 'relative',
-        zIndex: 10
-      }}>
+      {/* Account Details Area - 3D Inset Panel */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.65rem',
+          padding: '0.85rem 1rem',
+          borderRadius: '14px',
+          backgroundColor: 'var(--input-bg)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: 'var(--shadow-skeuo-inset)',
+          position: 'relative',
+          zIndex: 10,
+        }}
+      >
         {/* Username Row (Click to Copy) */}
         <div
           onClick={() => copyToClipboard(record.username, 'user')}
-          style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '2px' }}
+          style={{
+            cursor: 'pointer',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+            padding: '2px 4px',
+            borderRadius: '6px',
+            transition: 'background 0.2s',
+          }}
           title="Click to copy Username"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Username</span>
-            {copiedUser && (
-              <span style={{ fontSize: '0.7rem', color: 'var(--accent-success)', fontWeight: '600', animation: 'fade-in 0.2s' }}>
-                Copied!
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Username
+            </span>
+            {copiedUser ? (
+              <span style={{ fontSize: '0.72rem', color: 'var(--accent-success)', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Check size={12} /> Copied!
+              </span>
+            ) : (
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '2px', opacity: 0.7 }}>
+                <Copy size={11} /> Copy
               </span>
             )}
           </div>
-          <span style={{
-            fontSize: '0.9rem',
-            color: isVisible ? 'var(--text-primary)' : 'var(--text-secondary)',
-            fontWeight: '500',
-            fontFamily: isVisible ? 'inherit' : 'monospace',
-            letterSpacing: isVisible ? 'normal' : '0.15em',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            display: 'block'
-          }}>
+          <span
+            style={{
+              fontSize: '0.92rem',
+              color: isVisible ? 'var(--text-primary)' : 'var(--text-secondary)',
+              fontWeight: '500',
+              fontFamily: isVisible ? 'inherit' : 'monospace',
+              letterSpacing: isVisible ? 'normal' : '0.12em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              display: 'block',
+            }}
+          >
             {isVisible ? record.username : '••••••••'}
           </span>
         </div>
 
         {/* Divider */}
-        <div style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.04)' }} />
+        <div style={{ height: '1px', backgroundColor: 'var(--glass-border)' }} />
 
         {/* Password Row (Click to Copy) */}
         <div
           onClick={() => copyToClipboard(record.password, 'pass')}
-          style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '2px' }}
+          style={{
+            cursor: 'pointer',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+            padding: '2px 4px',
+            borderRadius: '6px',
+            transition: 'background 0.2s',
+          }}
           title="Click to copy Password"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Password</span>
-            {copiedPass && (
-              <span style={{ fontSize: '0.7rem', color: 'var(--accent-success)', fontWeight: '600', animation: 'fade-in 0.2s' }}>
-                Copied!
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              Password
+            </span>
+            {copiedPass ? (
+              <span style={{ fontSize: '0.72rem', color: 'var(--accent-success)', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Check size={12} /> Copied!
+              </span>
+            ) : (
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '2px', opacity: 0.7 }}>
+                <Copy size={11} /> Copy
               </span>
             )}
           </div>
-          <span style={{
-            fontSize: '0.9rem',
-            color: isVisible ? 'var(--text-primary)' : 'var(--text-secondary)',
-            fontWeight: '500',
-            fontFamily: 'monospace',
-            letterSpacing: isVisible ? 'normal' : '0.15em',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            display: 'block'
-          }}>
+          <span
+            style={{
+              fontSize: '0.92rem',
+              color: isVisible ? 'var(--text-primary)' : 'var(--text-secondary)',
+              fontWeight: '500',
+              fontFamily: 'monospace',
+              letterSpacing: isVisible ? 'normal' : '0.14em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              display: 'block',
+            }}
+          >
             {isVisible ? record.password : '••••••••••••'}
           </span>
         </div>
       </div>
 
       {/* Actions Footer */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 'auto',
-        paddingTop: '0.25rem',
-        position: 'relative',
-        zIndex: 10
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: 'auto',
+          paddingTop: '0.25rem',
+          position: 'relative',
+          zIndex: 10,
+        }}
+      >
         {/* Toggle View button */}
         <button
           onClick={() => setIsVisible(!isVisible)}
           className="btn-raised"
           style={{
-            padding: '6px 12px',
-            fontSize: '0.8rem',
-            borderRadius: '8px',
-            gap: '0.35rem'
+            padding: '6px 14px',
+            fontSize: '0.82rem',
+            borderRadius: '10px',
+            gap: '0.35rem',
           }}
         >
           {isVisible ? <EyeOff size={14} /> : <Eye size={14} />}
           <span>{isVisible ? 'Hide' : 'Reveal'}</span>
         </button>
 
-        <div style={{ display: 'flex', gap: '0.50rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
           {/* Edit Button */}
           <button
             onClick={() => onEditClick(record)}
             className="btn-raised"
             style={{
-              padding: '6px 10px',
-              borderRadius: '8px',
-              color: 'var(--text-secondary)'
+              padding: '6px 11px',
+              borderRadius: '10px',
+              color: 'var(--text-secondary)',
             }}
             title="Edit Details"
           >
@@ -266,30 +315,20 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
           {/* Delete Button */}
           <button
             onClick={() => onDeleteClick(record.id)}
-            className="btn-raised btn-danger-trigger"
+            className="btn-raised"
             style={{
-              padding: '6px 10px',
-              borderRadius: '8px',
-              background: 'none',
-              borderColor: 'rgba(239, 68, 68, 0.15)',
-              color: '#f87171',
-              boxShadow: 'none'
+              padding: '6px 11px',
+              borderRadius: '10px',
+              borderColor: 'rgba(239, 68, 68, 0.25)',
+              color: '#ef4444',
             }}
             title="Delete Password"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.15)';
-            }}
           >
             <Trash2 size={14} />
           </button>
         </div>
       </div>
-      
+
       <style jsx>{`
         .hover-underline:hover {
           text-decoration: underline !important;

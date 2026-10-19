@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { Outfit } from "next/font/google";
 import { headers } from "next/headers";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -9,7 +10,7 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "DevPass",
+  title: "DevPass | Secure 3D Password Vault",
   description: "Encrypt and manage your passwords locally in your browser with AES-256 and store them securely in your Google Sheets database.",
   icons: {
     icon: "https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png",
@@ -49,32 +50,53 @@ export default async function RootLayout({ children }) {
           logoImageUrl: "https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png"
         },
         variables: {
-          colorText: "#f8fafc",
-          colorMutedForeground: "#94a3b8",
-          colorTextSecondary: "#94a3b8",
+          colorText: "var(--text-primary)",
+          colorMutedForeground: "var(--text-muted)",
+          colorTextSecondary: "var(--text-secondary)",
           colorPrimary: "#6366f1",
         },
         elements: {
           formFieldLabel: {
-            color: "#94a3b8",
+            color: "var(--text-secondary)",
           },
           cardHeaderTitle: {
-            color: "#f8fafc",
+            color: "var(--text-primary)",
           },
           cardHeaderSubtitle: {
-            color: "#94a3b8",
+            color: "var(--text-secondary)",
           }
         }
       }}
     >
-      <html lang="en">
-        <body className={outfit.className}>
-          <div className="bg-ambient">
-            <div className="bg-orb orb-1"></div>
-            <div className="bg-orb orb-2"></div>
-            <div className="bg-orb orb-3"></div>
-          </div>
-          {children}
+      <html lang="en" data-theme="light" suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    var saved = localStorage.getItem('devpass-theme');
+                    var theme = (saved === 'dark' || saved === 'light') ? saved : 'light';
+                    document.documentElement.setAttribute('data-theme', theme);
+                    if (document.body) {
+                      document.body.setAttribute('data-theme', theme);
+                      document.body.className = theme === 'dark' ? 'theme-dark' : 'theme-light';
+                    }
+                  } catch (e) {}
+                })();
+              `,
+            }}
+          />
+        </head>
+        <body className={`${outfit.className} theme-light`}>
+          <ThemeProvider>
+            <div className="bg-ambient">
+              <div className="bg-orb orb-1"></div>
+              <div className="bg-orb orb-2"></div>
+              <div className="bg-orb orb-3"></div>
+            </div>
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

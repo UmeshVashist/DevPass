@@ -104,40 +104,45 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '1.5rem',
+          marginBottom: '1.75rem',
           position: 'relative',
           zIndex: 10
         }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+          <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Change Master Password
           </h3>
           <button
             onClick={onClose}
             style={{
-              background: 'none',
-              border: 'none',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-border)',
               cursor: 'pointer',
               color: 'var(--text-secondary)',
               display: 'flex',
               alignItems: 'center',
-              padding: '4px',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
               borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.02)'
+              boxShadow: 'var(--shadow-btn-raised)',
+              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
             }}
+            title="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {error && (
           <div className="glass-card" style={{
-            padding: '0.75rem 1rem',
+            padding: '0.85rem 1.1rem',
             marginBottom: '1.25rem',
-            background: 'rgba(239, 68, 68, 0.08)',
-            borderColor: 'rgba(239, 68, 68, 0.2)',
-            color: '#fca5a5',
-            fontSize: '0.85rem',
-            borderRadius: '12px',
+            background: 'rgba(239, 68, 68, 0.1)',
+            borderColor: 'rgba(239, 68, 68, 0.3)',
+            color: '#ef4444',
+            fontSize: '0.88rem',
+            fontWeight: '500',
+            borderRadius: '14px',
             position: 'relative',
             zIndex: 10
           }}>
@@ -148,7 +153,7 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative', zIndex: 10 }}>
           
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Old Master Password
             </label>
             <div className="inset-input-wrapper">
@@ -167,10 +172,10 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
             </div>
           </div>
 
-          <div style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.05)', margin: '0.25rem 0' }} />
+          <div style={{ height: '1px', backgroundColor: 'var(--glass-border)', margin: '0.25rem 0' }} />
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               New Master Password
             </label>
             <div className="inset-input-wrapper">
@@ -190,7 +195,7 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Confirm New Master Password
             </label>
             <div className="inset-input-wrapper">
@@ -226,7 +231,8 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
                 color: 'var(--text-secondary)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem'
+                gap: '0.4rem',
+                fontWeight: '500'
               }}
             >
               {showPasswords ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -235,17 +241,17 @@ export default function ChangeMasterPasswordModal({ isOpen, onClose, masterPassw
           </div>
 
           <div className="glass-card" style={{
-            padding: '0.75rem 1rem',
-            background: 'rgba(245, 158, 11, 0.04)',
-            borderColor: 'rgba(245, 158, 11, 0.15)',
-            borderRadius: '12px',
+            padding: '0.85rem 1rem',
+            background: 'rgba(245, 158, 11, 0.08)',
+            borderColor: 'rgba(245, 158, 11, 0.25)',
+            borderRadius: '14px',
             display: 'flex',
-            gap: '0.5rem',
+            gap: '0.65rem',
             alignItems: 'flex-start'
           }}>
-            <ShieldAlert size={16} style={{ color: 'var(--accent-favorite)', flexShrink: 0, marginTop: '2px' }} />
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
-              <strong>Important:</strong> Changing your master password will re-encrypt all credentials. 
+            <ShieldAlert size={18} style={{ color: 'var(--accent-favorite)', flexShrink: 0, marginTop: '2px' }} />
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>Important:</strong> Changing your master password will re-encrypt all credentials. 
               Make sure to save it safely; if lost, your vault cannot be recovered.
             </p>
           </div>

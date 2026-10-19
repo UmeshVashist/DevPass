@@ -9,6 +9,7 @@ import AddPasswordModal from '@/components/AddPasswordModal';
 import EditPasswordModal from '@/components/EditPasswordModal';
 import PasswordCard from '@/components/PasswordCard';
 import ChangeMasterPasswordModal from '@/components/ChangeMasterPasswordModal';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -253,15 +254,18 @@ export default function Dashboard() {
         position: 'sticky',
         top: 0,
         zIndex: 40,
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--glass-border)',
-        background: 'rgba(7, 9, 19, 0.4)'
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid var(--header-border)',
+        background: 'var(--header-bg)',
+        transition: 'background 0.3s ease, border-color 0.3s ease'
       }}>
-        <div className="container" style={{
+        <div className="container mobile-header-inner" style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '1.25rem 1.5rem'
+          padding: '1rem 1.5rem',
+          gap: '1rem'
         }}>
           {/* Logo */}
           <a
@@ -277,61 +281,63 @@ export default function Dashboard() {
           >
             <div className="btn-raised" style={{
               padding: '8px',
-              borderRadius: '10px',
-              backgroundColor: 'rgba(99, 102, 241, 0.1)',
-              borderColor: 'rgba(99, 102, 241, 0.25)',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(99, 102, 241, 0.12)',
+              borderColor: 'rgba(99, 102, 241, 0.28)',
               color: 'var(--accent-primary)',
-              boxShadow: '0 0 15px 0 rgba(99, 102, 241, 0.2)'
+              boxShadow: '0 2px 10px 0 rgba(99, 102, 241, 0.2)'
             }}>
               <img 
                 src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
                 alt="DevPass Logo" 
-                style={{ width: '20px', height: '20px', objectFit: 'contain', display: 'block' }}
+                style={{ width: '22px', height: '22px', objectFit: 'contain', display: 'block' }}
               />
             </div>
             <div>
-              <span style={{ fontSize: '1.25rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
                 DevPass
               </span>
-              <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: '600', letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '1px' }}>
+              <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '1px' }}>
                 Vault Active
               </span>
             </div>
           </a>
 
-          {/* User controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* User controls with 3D Theme Switcher */}
+          <div className="header-controls-group" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <ThemeToggle size="small" />
+            
             <button
               onClick={() => setIsChangePasswordOpen(true)}
               className="btn-raised"
               style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.85rem',
-                borderColor: 'rgba(255,255,255,0.06)',
+                padding: '0.55rem 0.95rem',
+                fontSize: '0.82rem',
                 gap: '0.4rem'
               }}
               title="Change Vault Password"
             >
               <Key size={14} />
-              <span>Change Password</span>
+              <span className="btn-responsive-text">Change Password</span>
             </button>
+
             <button
               onClick={handleLock}
               className="btn-raised"
               style={{
-                padding: '0.5rem 1rem',
-                fontSize: '0.85rem',
-                borderColor: 'rgba(255,255,255,0.06)',
+                padding: '0.55rem 0.95rem',
+                fontSize: '0.82rem',
                 gap: '0.4rem'
               }}
               title="Lock Vault"
             >
-              <Key size={14} />
-              <span>Lock Vault</span>
+              <ShieldCheck size={14} />
+              <span className="btn-responsive-text">Lock Vault</span>
             </button>
+
             <div style={{
               borderLeft: '1px solid var(--glass-border)',
-              paddingLeft: '1rem',
+              paddingLeft: '0.75rem',
               display: 'flex',
               alignItems: 'center'
             }}>
@@ -346,7 +352,7 @@ export default function Dashboard() {
         <div className="container">
           
           {/* Toolbar Search and Filters */}
-          <div className="glass-card" style={{
+          <div className="glass-card toolbar-wrapper" style={{
             padding: '1.25rem 1.5rem',
             marginBottom: '2rem',
             display: 'flex',
@@ -358,9 +364,9 @@ export default function Dashboard() {
             <div className="glass-glare"></div>
 
             {/* Left side filters */}
-            <div style={{ display: 'flex', flex: 1, minWidth: '280px', gap: '1rem', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
+            <div className="toolbar-search-filter-group" style={{ display: 'flex', flex: 1, minWidth: '260px', gap: '1rem', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
               {/* Search input */}
-              <div className="inset-input-wrapper" style={{ flex: 2, minWidth: '200px' }}>
+              <div className="inset-input-wrapper toolbar-search-input" style={{ flex: 2, minWidth: '180px' }}>
                 <span style={{ paddingLeft: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
                   <Search size={18} />
                 </span>
@@ -375,22 +381,22 @@ export default function Dashboard() {
               </div>
 
               {/* Favorites dropdown filter */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div className="toolbar-filter-select" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
                   className="dropdown-skeuo"
-                  style={{ minWidth: '130px', cursor: 'pointer' }}
+                  style={{ minWidth: '130px', width: '100%', cursor: 'pointer' }}
                 >
-                  <option value="all" style={{ cursor: 'pointer' }}>All Items</option>
-                  <option value="favorite" style={{ cursor: 'pointer' }}>Favorites</option>
-                  <option value="unfavorite" style={{ cursor: 'pointer' }}>Unfavorites</option>
+                  <option value="all">All Items</option>
+                  <option value="favorite">Favorites</option>
+                  <option value="unfavorite">Unfavorites</option>
                 </select>
               </div>
             </div>
 
             {/* Right side add password action */}
-            <div style={{ position: 'relative', zIndex: 10 }}>
+            <div className="toolbar-add-btn" style={{ position: 'relative', zIndex: 10 }}>
               <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="btn-raised btn-accent"
@@ -426,18 +432,19 @@ export default function Dashboard() {
               <div className="glass-glare"></div>
               <div style={{
                 color: 'var(--text-muted)',
-                padding: '1rem',
+                padding: '1.25rem',
                 borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.05)',
+                backgroundColor: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                boxShadow: 'var(--shadow-skeuo-raised)',
                 display: 'inline-flex'
               }}>
-                <Shield size={32} />
+                <Shield size={36} />
               </div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: '700', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                 {searchQuery ? 'No Results Found' : 'Vault is Empty'}
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '380px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', maxWidth: '400px', lineHeight: 1.5 }}>
                 {searchQuery 
                   ? 'No records match your query. Try checking your spelling or adjusting the dropdown filter.' 
                   : 'Start storing your credentials securely! Click "Add Password" above to create your first encrypted record.'}
@@ -446,19 +453,22 @@ export default function Dashboard() {
                 <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="btn-raised btn-accent"
-                  style={{ marginTop: '0.5rem', padding: '0.65rem 1.25rem', fontSize: '0.85rem' }}
+                  style={{ marginTop: '0.5rem', padding: '0.75rem 1.5rem', fontSize: '0.88rem' }}
                 >
                   Create Record
                 </button>
               )}
             </div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-              gap: '1.5rem',
-              alignItems: 'stretch'
-            }}>
+            <div
+              className="passwords-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                gap: '1.5rem',
+                alignItems: 'stretch'
+              }}
+            >
               {filteredRecords.map((record) => (
                 <PasswordCard
                   key={record.id}

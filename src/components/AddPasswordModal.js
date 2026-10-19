@@ -111,36 +111,41 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
           position: 'relative',
           zIndex: 10
         }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+          <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Add New Password
           </h3>
           <button
             onClick={onClose}
             style={{
-              background: 'none',
-              border: 'none',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-border)',
               cursor: 'pointer',
               color: 'var(--text-secondary)',
               display: 'flex',
               alignItems: 'center',
-              padding: '4px',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
               borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.02)'
+              boxShadow: 'var(--shadow-btn-raised)',
+              transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)'
             }}
+            title="Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {error && (
           <div className="glass-card" style={{
-            padding: '0.75rem 1rem',
+            padding: '0.85rem 1.1rem',
             marginBottom: '1.25rem',
-            background: 'rgba(239, 68, 68, 0.08)',
-            borderColor: 'rgba(239, 68, 68, 0.2)',
-            color: '#fca5a5',
-            fontSize: '0.85rem',
-            borderRadius: '12px',
+            background: 'rgba(239, 68, 68, 0.1)',
+            borderColor: 'rgba(239, 68, 68, 0.3)',
+            color: '#ef4444',
+            fontSize: '0.88rem',
+            fontWeight: '500',
+            borderRadius: '14px',
             position: 'relative',
             zIndex: 10
           }}>
@@ -151,7 +156,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative', zIndex: 10 }}>
           
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Title *
             </label>
             <div className="inset-input-wrapper">
@@ -171,23 +176,23 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               URL *
             </label>
             <div className="inset-input-wrapper" style={{ display: 'flex', alignItems: 'stretch', padding: 0, overflow: 'hidden' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 0.85rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                borderRight: '1px solid var(--glass-border)',
-                color: 'var(--text-muted)',
-                fontSize: '0.9rem',
-                fontWeight: '600',
-                userSelect: 'none',
-                borderTopLeftRadius: '10px',
-                borderBottomLeftRadius: '10px'
-              }}>
+              <div
+                className="input-prefix-tag"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 0.85rem',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  userSelect: 'none',
+                  borderTopLeftRadius: '12px',
+                  borderBottomLeftRadius: '12px'
+                }}
+              >
                 https://
               </div>
               <input
@@ -217,7 +222,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Username *
             </label>
             <div className="inset-input-wrapper">
@@ -237,7 +242,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+            <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
               Password *
             </label>
             <div className="inset-input-wrapper">
@@ -271,21 +276,22 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-              padding: '0.5rem 0.25rem',
+              padding: '0.65rem 0.5rem',
               cursor: 'pointer',
-              borderRadius: '12px',
+              borderRadius: '14px',
               border: isFavoriteFocused ? '1px solid var(--accent-primary)' : '1px solid transparent',
-              boxShadow: isFavoriteFocused ? '0 0 8px var(--accent-glow)' : 'none',
+              boxShadow: isFavoriteFocused ? '0 0 10px var(--accent-glow)' : 'none',
               outline: 'none',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              backgroundColor: isFavorite ? 'rgba(245, 158, 11, 0.08)' : 'transparent'
             }}
           >
             <div className="btn-raised" style={{
-              padding: '6px',
-              borderRadius: '8px',
-              backgroundColor: isFavorite ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
-              borderColor: isFavorite ? 'rgba(245, 158, 11, 0.3)' : 'var(--glass-border)',
-              boxShadow: isFavorite ? '0 0 10px 0 var(--accent-favorite-glow)' : 'none',
+              padding: '8px',
+              borderRadius: '12px',
+              backgroundColor: isFavorite ? 'rgba(245, 158, 11, 0.15)' : 'var(--glass-bg)',
+              borderColor: isFavorite ? 'rgba(245, 158, 11, 0.4)' : 'var(--glass-border)',
+              boxShadow: isFavorite ? '0 0 12px 0 var(--accent-favorite-glow)' : 'var(--shadow-btn-raised)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -295,16 +301,16 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
               <Heart size={18} fill={isFavorite ? 'var(--accent-favorite)' : 'none'} />
             </div>
             <div>
-              <span style={{ fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: '0.92rem', fontWeight: '600', color: 'var(--text-primary)' }}>
                 Mark as Favorite
               </span>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                This record will be filtered under favorites
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                This credential will be highlighted and easily filtered
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
             <button
               type="submit"
               className="btn-raised btn-accent"
@@ -333,7 +339,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
               className="btn-raised"
               style={{ flex: 1, padding: '0.85rem' }}
             >
-              Clear Form
+              Clear
             </button>
           </div>
 

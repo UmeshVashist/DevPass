@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Lock, Unlock, Eye, EyeOff, ShieldCheck, AlertCircle, LogOut } from 'lucide-react';
 import { encryptData, decryptData } from '@/lib/crypto';
 import { useClerk } from '@clerk/nextjs';
+import ThemeToggle from './ThemeToggle';
 
 export default function MasterPasswordModal({ records, onUnlock, isLoadingRecords }) {
   const { signOut } = useClerk();
@@ -91,10 +92,20 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
 
   return (
     <div className="modal-backdrop">
-      <div className="glass-card modal-content">
+      <div className="glass-card modal-content" style={{ position: 'relative' }}>
         <div className="glass-glare"></div>
+
+        {/* Top bar with Theme Switcher */}
+        <div style={{
+          position: 'absolute',
+          top: '1.25rem',
+          right: '1.25rem',
+          zIndex: 20
+        }}>
+          <ThemeToggle size="small" />
+        </div>
         
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem', position: 'relative', zIndex: 10 }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem', position: 'relative', zIndex: 10, paddingTop: '0.5rem' }}>
           <a
             href={process.env.NEXT_PUBLIC_LAUNCHER_URL ? `${process.env.NEXT_PUBLIC_LAUNCHER_URL}/dashboard` : "https://devtech.cashms.in/dashboard"}
             style={{ textDecoration: 'none', display: 'inline-block', cursor: 'pointer' }}
@@ -102,39 +113,40 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
           >
             <div style={{
               display: 'inline-flex',
-              padding: '1rem',
-              borderRadius: '50%',
-              background: 'rgba(99, 102, 241, 0.1)',
-              border: '1px solid rgba(99, 102, 241, 0.2)',
+              padding: '1.1rem',
+              borderRadius: '24px',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-border-bright)',
               marginBottom: '1rem',
-              boxShadow: '0 4px 12px 0 rgba(99, 102, 241, 0.15)'
+              boxShadow: 'var(--shadow-skeuo-raised)',
+              transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             }}>
               <img 
                 src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
                 alt="DevPass Logo" 
-                style={{ width: '32px', height: '32px', objectFit: 'contain', display: 'block' }}
+                style={{ width: '38px', height: '38px', objectFit: 'contain', display: 'block' }}
               />
             </div>
           </a>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: '800', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
             {isNewUser ? 'Set Master Password' : 'Unlock Your Vault'}
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.5rem', padding: '0 1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginTop: '0.5rem', padding: '0 0.5rem', lineHeight: 1.5 }}>
             {isNewUser 
               ? 'Create a master password to encrypt your database. Make sure to remember it, as it cannot be reset.' 
-              : 'Enter your Master Password to decrypt your stored credentials.'}
+              : 'Enter your Master Password to decrypt your stored credentials locally.'}
           </p>
         </div>
 
         {isLoadingRecords ? (
-          <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--text-secondary)' }}>
+          <div style={{ textAlign: 'center', padding: '2.5rem 0', color: 'var(--text-secondary)' }}>
             <div style={{
-              width: '32px',
-              height: '32px',
-              border: '3px solid rgba(255, 255, 255, 0.1)',
+              width: '36px',
+              height: '36px',
+              border: '3px solid var(--glass-border)',
               borderTopColor: 'var(--accent-primary)',
               borderRadius: '50%',
-              margin: '0 auto 1rem',
+              margin: '0 auto 1.25rem',
               animation: 'spin 1s linear infinite'
             }}></div>
             <style jsx>{`
@@ -142,7 +154,7 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
                 to { transform: rotate(360deg); }
               }
             `}</style>
-            Connecting to secure storage...
+            <span style={{ fontSize: '0.95rem', fontWeight: '500' }}>Connecting to secure vault storage...</span>
           </div>
         ) : (
           <form onSubmit={isNewUser ? handleCreate : handleUnlock} style={{ position: 'relative', zIndex: 10 }}>
@@ -150,22 +162,23 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
               <div className="glass-card" style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.50rem',
-                padding: '0.75rem 1rem',
+                gap: '0.65rem',
+                padding: '0.85rem 1.1rem',
                 marginBottom: '1.25rem',
-                background: 'rgba(239, 68, 68, 0.08)',
-                borderColor: 'rgba(239, 68, 68, 0.2)',
-                borderRadius: '12px',
-                color: '#fca5a5',
-                fontSize: '0.85rem'
+                background: 'rgba(239, 68, 68, 0.12)',
+                borderColor: 'rgba(239, 68, 68, 0.3)',
+                borderRadius: '14px',
+                color: '#ef4444',
+                fontSize: '0.88rem',
+                fontWeight: '500'
               }}>
-                <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                <AlertCircle size={18} style={{ flexShrink: 0 }} />
                 <span>{error}</span>
               </div>
             )}
 
             <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 Master Password
               </label>
               <div className="inset-input-wrapper">
@@ -190,6 +203,7 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
                     display: 'flex',
                     alignItems: 'center'
                   }}
+                  title={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -198,7 +212,7 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
 
             {isNewUser && (
               <div style={{ marginBottom: '1.75rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                   Confirm Master Password
                 </label>
                 <div className="inset-input-wrapper">
@@ -214,7 +228,7 @@ export default function MasterPasswordModal({ records, onUnlock, isLoadingRecord
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.75rem' }}>
               <button
                 type="button"
                 className="btn-raised"
