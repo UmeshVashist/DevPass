@@ -53,6 +53,7 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
 
       // Generate a unique ID for this record
       const recordId = 'pass_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+      const createdAt = new Date().toISOString();
 
       const payload = {
         id: recordId,
@@ -60,7 +61,8 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
         url: encryptedUrl,
         username: encryptedUsername,
         password: encryptedPassword,
-        isFavorite: isFavorite
+        isFavorite: isFavorite,
+        createdAt: createdAt
       };
 
       const res = await fetch('/api/passwords', {
@@ -88,7 +90,8 @@ export default function AddPasswordModal({ isOpen, onClose, masterPassword, onAd
         url: finalUrl,
         username: username.trim(),
         password: password.trim(),
-        isFavorite
+        isFavorite,
+        createdAt: createdAt
       });
       onClose();
     } catch (err) {

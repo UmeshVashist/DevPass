@@ -98,7 +98,7 @@ export default function Dashboard() {
   const decryptedRecords = useMemo(() => {
     if (!isUnlocked || !masterPassword || !records) return [];
 
-    return records
+    const mapped = records
       .filter((r) => r.title !== '__MASTER_VERIFIER__')
       .map((r) => {
         try {
@@ -108,7 +108,8 @@ export default function Dashboard() {
             url: decryptData(r.url, masterPassword),
             username: decryptData(r.username, masterPassword),
             password: decryptData(r.password, masterPassword),
-            isFavorite: r.isFavorite
+            isFavorite: r.isFavorite,
+            createdAt: r.createdAt || null
           };
         } catch (e) {
           // If a row fails to decrypt, we don't crash, we just label it corrupted or bypass.
@@ -117,6 +118,16 @@ export default function Dashboard() {
         }
       })
       .filter(Boolean); // Filter out failed decryptions
+
+    // Sort descending by creation timestamp: NEWEST / LATEST ALWAYS AT TOP (Position 1)
+    return mapped.sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (timeA && timeB) return timeB - timeA;
+      if (timeB && !timeA) return 1;
+      if (timeA && !timeB) return -1;
+      return 0;
+    });
   }, [records, masterPassword, isUnlocked]);
 
   // Handle local searching and dropdown filtering
@@ -151,9 +162,8 @@ export default function Dashboard() {
   };
 
   const handleAddSuccess = (newDecryptedRecord) => {
-    // Optimistic UI update
+    // Optimistic UI update: PREPEND so the newly added password appears at the TOP (first position)
     setRecords((prev) => {
-      // Re-encrypt values to sync with raw records state structure
       const encryptedRecord = {
         userId: user?.id,
         id: newDecryptedRecord.id,
@@ -161,11 +171,12 @@ export default function Dashboard() {
         url: encryptData(newDecryptedRecord.url, masterPassword),
         username: encryptData(newDecryptedRecord.username, masterPassword),
         password: encryptData(newDecryptedRecord.password, masterPassword),
-        isFavorite: newDecryptedRecord.isFavorite
+        isFavorite: newDecryptedRecord.isFavorite,
+        createdAt: newDecryptedRecord.createdAt || new Date().toISOString()
       };
-      return prev ? [...prev, encryptedRecord] : [encryptedRecord];
+      return prev ? [encryptedRecord, ...prev] : [encryptedRecord];
     });
-    showToast('Password saved securely.');
+    showToast('Password saved securely to top of vault!');
   };
 
   const handleEditClick = (decryptedRecord) => {

@@ -38,7 +38,7 @@ export async function POST(request) {
 
     // 1. Fetch existing sheet rows
     const allRows = await getSheetRows();
-    const headers = allRows.length > 0 ? allRows[0] : ['userId', 'id', 'title', 'url', 'username', 'password', 'isFavorite'];
+    const headers = allRows.length > 0 ? allRows[0] : ['userId', 'id', 'title', 'url', 'username', 'password', 'isFavorite', 'createdAt'];
 
     // 2. Filter out this user's records to keep other users' data intact
     const otherUsersRows = allRows.slice(1).filter((row) => row[0] !== userId);
@@ -52,6 +52,7 @@ export async function POST(request) {
       r.username,
       r.password,
       String(r.isFavorite === true),
+      r.createdAt || '',
     ]);
 
     // 4. Combine headers, other users' data, and the updated user data
@@ -63,13 +64,13 @@ export async function POST(request) {
     // 6. Clear existing values to prevent leftover rows
     await sheets.spreadsheets.values.clear({
       spreadsheetId: sheetId,
-      range: `${sheetDetails.name}!A:G`,
+      range: `${sheetDetails.name}!A:H`,
     });
 
     // 7. Write the complete set of rows
     await sheets.spreadsheets.values.update({
       spreadsheetId: sheetId,
-      range: `${sheetDetails.name}!A:G`,
+      range: `${sheetDetails.name}!A:H`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: updatedValues,

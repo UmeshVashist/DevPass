@@ -82,7 +82,7 @@ export async function getSheetRows() {
   try {
     // Default to "Sheet1" or cached sheet name to save an API request to resolveSheetDetails
     let sheetName = cachedSheetDetails ? cachedSheetDetails.name : 'Sheet1';
-    const range = `${sheetName}!A:G`;
+    const range = `${sheetName}!A:H`;
     
     try {
       const response = await sheets.spreadsheets.values.get({
@@ -99,7 +99,7 @@ export async function getSheetRows() {
       // Fallback: Resolve dynamically if Sheet1 does not exist
       console.warn('Sheet1 not found, resolving metadata dynamically...');
       const sheetDetails = await resolveSheetDetails(sheets);
-      const fallbackRange = `${sheetDetails.name}!A:G`;
+      const fallbackRange = `${sheetDetails.name}!A:H`;
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
         range: fallbackRange,
@@ -116,7 +116,7 @@ export async function getSheetRows() {
 
 /**
  * Appends a new row to the Google Sheet.
- * Columns: userId, id, title, url, username, password, isFavorite
+ * Columns: userId, id, title, url, username, password, isFavorite, createdAt
  */
 export async function appendSheetRow(rowData) {
   const auth = getAuthClient();
@@ -129,7 +129,7 @@ export async function appendSheetRow(rowData) {
     if (!headersChecked) {
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
-        range: `${sheetDetails.name}!A1:G1`,
+        range: `${sheetDetails.name}!A1:H1`,
       });
       const currentRows = response.data.values || [];
       if (currentRows.length === 0) {
@@ -138,14 +138,14 @@ export async function appendSheetRow(rowData) {
           range: `${sheetDetails.name}!A1`,
           valueInputOption: 'USER_ENTERED',
           requestBody: {
-            values: [['userId', 'id', 'title', 'url', 'username', 'password', 'isFavorite']],
+            values: [['userId', 'id', 'title', 'url', 'username', 'password', 'isFavorite', 'createdAt']],
           },
         });
       }
       headersChecked = true;
     }
 
-    const range = `${sheetDetails.name}!A:G`;
+    const range = `${sheetDetails.name}!A:H`;
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId: sheetId,
       range,
@@ -190,7 +190,7 @@ export async function updateSheetRow(recordId, userId, rowData) {
 
     const googleRowIndex = rowIndex + 1; // Google Sheets is 1-indexed
 
-    const range = `${sheetDetails.name}!A${googleRowIndex}:G${googleRowIndex}`;
+    const range = `${sheetDetails.name}!A${googleRowIndex}:H${googleRowIndex}`;
     const response = await sheets.spreadsheets.values.update({
       spreadsheetId: sheetId,
       range,

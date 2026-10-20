@@ -65,7 +65,8 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
         url: encryptedUrl,
         username: encryptedUsername,
         password: encryptedPassword,
-        isFavorite: isFavorite
+        isFavorite: isFavorite,
+        createdAt: record.createdAt || ''
       };
 
       const res = await fetch('/api/passwords', {
@@ -85,7 +86,8 @@ export default function EditPasswordModal({ isOpen, onClose, record, masterPassw
         url: finalUrl,
         username: username.trim(),
         password: password.trim(),
-        isFavorite
+        isFavorite,
+        createdAt: record.createdAt || ''
       });
       onClose();
     } catch (err) {

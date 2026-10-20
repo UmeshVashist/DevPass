@@ -72,6 +72,32 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
     return `https://${urlStr}`;
   };
 
+  // Determine if this credential was created within the last 24 hours
+  const isNewlyAdded = () => {
+    if (!record.createdAt) return false;
+    const createdTime = new Date(record.createdAt).getTime();
+    if (isNaN(createdTime)) return false;
+    const diff = Date.now() - createdTime;
+    return diff >= 0 && diff < 24 * 60 * 60 * 1000; // 24 hours
+  };
+
+  // Human-readable relative time for 24h window
+  const getRelativeTime = () => {
+    if (!record.createdAt) return '';
+    const createdTime = new Date(record.createdAt).getTime();
+    if (isNaN(createdTime)) return '';
+    const diff = Math.max(0, Date.now() - createdTime);
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return '';
+  };
+
+  const isNew = isNewlyAdded();
+  const relativeTime = getRelativeTime();
+
   return (
     <div
       className="glass-card"
@@ -90,19 +116,47 @@ export default function PasswordCard({ record, masterPassword, onEditClick, onDe
       {/* Header Area */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 10 }}>
         <div style={{ flex: 1, minWidth: 0, marginRight: '0.75rem' }}>
-          <h4
-            style={{
-              fontSize: '1.15rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              letterSpacing: '-0.01em',
-            }}
-          >
-            {record.title}
-          </h4>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <h4
+              style={{
+                fontSize: '1.15rem',
+                fontWeight: '700',
+                color: 'var(--text-primary)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              {record.title}
+            </h4>
+            {isNew && (
+              <span
+                className="badge-3d-new"
+                title={`Added ${relativeTime ? relativeTime : 'recently (within last 24h)'}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  fontSize: '0.68rem',
+                  fontWeight: '800',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  userSelect: 'none',
+                }}
+              >
+                <span className="badge-pulse-dot" />
+                <span>NEW</span>
+                {relativeTime && (
+                  <span style={{ opacity: 0.88, fontWeight: '600', fontSize: '0.62rem' }}>
+                    • {relativeTime}
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
           <a
             href={getCleanUrl(record.url)}
             target="_blank"
