@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { UserButton, useUser } from '@clerk/nextjs';
-import { Search, Plus, Loader2, ShieldCheck, Key, Shield, Filter, AlertCircle, RefreshCw, Trash2, Heart } from 'lucide-react';
+import { Search, Plus, Loader2, ShieldCheck, Key, Shield, Filter, AlertCircle, RefreshCw, Trash2, Heart, X } from 'lucide-react';
 import { decryptData, encryptData } from '@/lib/crypto';
 import MasterPasswordModal from '@/components/MasterPasswordModal';
 import AddPasswordModal from '@/components/AddPasswordModal';
@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const searchInputRef = useRef(null);
   
   // Custom Toast State
   const [toast, setToast] = useState(null);
@@ -93,6 +94,41 @@ export default function Dashboard() {
       });
     };
   }, [isUnlocked]);
+
+  // Keyboard shortcut listener: Press '/' to focus and activate search
+  useEffect(() => {
+    if (!isUnlocked) return;
+
+    const handleKeyDown = (e) => {
+      // If any modal is open, do not intercept
+      if (isAddModalOpen || isEditModalOpen || isChangePasswordOpen) return;
+
+      // Ignore if user is already typing in an input, textarea, select, or contentEditable element
+      const activeElement = document.activeElement;
+      const isInputFocused =
+        activeElement &&
+        (activeElement.tagName === 'INPUT' ||
+          activeElement.tagName === 'TEXTAREA' ||
+          activeElement.tagName === 'SELECT' ||
+          activeElement.isContentEditable);
+
+      if (isInputFocused) return;
+
+      // Check if '/' was pressed without modifier keys (Ctrl, Alt, Meta)
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+          searchInputRef.current.select();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isUnlocked, isAddModalOpen, isEditModalOpen, isChangePasswordOpen]);
 
   // Decrypt records in-browser using Master Password
   const decryptedRecords = useMemo(() => {
@@ -278,41 +314,91 @@ export default function Dashboard() {
           padding: '1rem 1.5rem',
           gap: '1rem'
         }}>
-          {/* Logo */}
-          <a
-            href={process.env.NEXT_PUBLIC_LAUNCHER_URL ? `${process.env.NEXT_PUBLIC_LAUNCHER_URL}/dashboard` : "https://devtech.cashms.in/dashboard"}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              textDecoration: 'none',
-              cursor: 'pointer'
-            }}
-            title="Go to DevTech Launcher Dashboard"
-          >
-            <div className="btn-raised" style={{
-              padding: '8px',
-              borderRadius: '12px',
-              backgroundColor: 'rgba(99, 102, 241, 0.12)',
-              borderColor: 'rgba(99, 102, 241, 0.28)',
-              color: 'var(--accent-primary)',
-              boxShadow: '0 2px 10px 0 rgba(99, 102, 241, 0.2)'
-            }}>
-              <img 
-                src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
-                alt="DevPass Logo" 
-                style={{ width: '22px', height: '22px', objectFit: 'contain', display: 'block' }}
-              />
-            </div>
-            <div>
-              <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
-                DevPass
+          {/* Logo & Vault Stats */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <a
+              href={process.env.NEXT_PUBLIC_LAUNCHER_URL ? `${process.env.NEXT_PUBLIC_LAUNCHER_URL}/dashboard` : "https://devtech.cashms.in/dashboard"}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                textDecoration: 'none',
+                cursor: 'pointer'
+              }}
+              title="Go to DevTech Launcher Dashboard"
+            >
+              <div className="btn-raised" style={{
+                padding: '8px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                borderColor: 'rgba(99, 102, 241, 0.28)',
+                color: 'var(--accent-primary)',
+                boxShadow: '0 2px 10px 0 rgba(99, 102, 241, 0.2)'
+              }}>
+                <img 
+                  src="https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png" 
+                  alt="DevPass Logo" 
+                  style={{ width: '22px', height: '22px', objectFit: 'contain', display: 'block' }}
+                />
+              </div>
+              <div>
+                <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
+                  DevPass
+                </span>
+                <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '1px' }}>
+                  Vault Active
+                </span>
+              </div>
+            </a>
+
+            {/* Saved Passwords Count Badge */}
+            <div
+              onClick={() => {
+                if (searchQuery || filterType !== 'all') {
+                  setSearchQuery('');
+                  setFilterType('all');
+                }
+              }}
+              className="header-vault-count-badge"
+              style={{
+                cursor: (searchQuery || filterType !== 'all') ? 'pointer' : 'default',
+              }}
+              title={
+                searchQuery || filterType !== 'all'
+                  ? `Filtered: showing ${filteredRecords.length} of ${decryptedRecords.length} saved passwords (click to show all)`
+                  : `Total ${decryptedRecords.length} saved ${decryptedRecords.length === 1 ? 'password' : 'passwords'} in vault`
+              }
+            >
+              <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '6px',
+                backgroundColor: 'rgba(99, 102, 241, 0.12)',
+                color: 'var(--accent-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <Key size={12} />
+              </div>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <strong style={{
+                  color: 'var(--accent-primary)',
+                  fontWeight: '800',
+                  fontSize: '0.9rem'
+                }}>
+                  {isLoadingRecords && records === null ? '...' : decryptedRecords.length}
+                </strong>
+                <span className="count-label-desktop" style={{ color: 'var(--text-secondary)' }}>
+                  {decryptedRecords.length === 1 ? 'Saved Password' : 'Saved Passwords'}
+                </span>
+                <span className="count-label-mobile" style={{ color: 'var(--text-secondary)' }}>
+                  Saved
+                </span>
               </span>
-              <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '1px' }}>
-                Vault Active
-              </span>
             </div>
-          </a>
+          </div>
 
           {/* User controls with 3D Theme Switcher */}
           <div className="header-controls-group" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -376,19 +462,68 @@ export default function Dashboard() {
 
             {/* Left side filters */}
             <div className="toolbar-search-filter-group" style={{ display: 'flex', flex: 1, minWidth: '260px', gap: '1rem', flexWrap: 'wrap', position: 'relative', zIndex: 10 }}>
-              {/* Search input */}
+              {/* Search input with '/' shortcut trigger */}
               <div className="inset-input-wrapper toolbar-search-input" style={{ flex: 2, minWidth: '180px' }}>
                 <span style={{ paddingLeft: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
                   <Search size={18} />
                 </span>
                 <input
+                  ref={searchInputRef}
                   type="text"
                   className="inset-input"
                   placeholder="Search by title or username..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ paddingLeft: '0.5rem' }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      if (searchQuery) {
+                        setSearchQuery('');
+                      } else {
+                        searchInputRef.current?.blur();
+                      }
+                    }
+                  }}
+                  style={{ paddingLeft: '0.5rem', paddingRight: '0.5rem' }}
                 />
+
+                {/* Clear (Esc) and '/' shortcut badge */}
+                <div style={{ display: 'flex', alignItems: 'center', paddingRight: '0.65rem', gap: '0.35rem' }}>
+                  {searchQuery ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        searchInputRef.current?.focus();
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        padding: '3px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '6px',
+                        transition: 'color 0.15s ease'
+                      }}
+                      title="Clear search (Esc)"
+                    >
+                      <X size={15} />
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      searchInputRef.current?.focus();
+                      searchInputRef.current?.select();
+                    }}
+                    className="search-shortcut-badge"
+                    title="Press '/' on keyboard to search"
+                  >
+                    /
+                  </button>
+                </div>
               </div>
 
               {/* Favorites dropdown filter */}
