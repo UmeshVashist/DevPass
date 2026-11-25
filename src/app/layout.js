@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
       domain={domain}
       signInUrl={signInUrl}
       satelliteAutoSync={true}
-      afterSignOutUrl={`${launcherUrl}/auth/login`}
+      afterSignOutUrl={`${launcherUrl}/auth/login?logged_out=1`}
       appearance={{
         layout: {
           logoImageUrl: "https://jxechgirxrbrblyrrqmt.supabase.co/storage/v1/object/public/images/bb5b5ced-6b47-425c-aad2-065017342a96/1784962617063-account-recovery.png"

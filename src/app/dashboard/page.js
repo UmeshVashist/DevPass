@@ -438,7 +438,7 @@ export default function Dashboard() {
               display: 'flex',
               alignItems: 'center'
             }}>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </div>
           </div>
         </div>
